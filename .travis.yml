@@ -1,0 +1,11 @@
+language: python
+python: '3.4'
+install:
+- pip install -e .
+- pip install pytest
+script: py.test
+deploy:
+  provider: heroku
+  api_key:
+    secure: Cuj+6N6Wt3CcDp5Xrd0x/VX8B9/HXEAvzmKMBX5nAlnx9lgKGDCtEKbTyQmH7ktJoyEJEL/HBr1+yZCUElyD3Y/dBT9RwRcNzKTz/TbGyZXoN3YIFoxCgbJhptkU6TUCUpxC2xU4ZKn89qHWE2QnudgWnq4VHTqzHhE1ecRpY4A=
+  on: master
