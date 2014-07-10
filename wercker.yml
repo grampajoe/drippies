@@ -1,0 +1,5 @@
+box: wercker/python
+build:
+  steps:
+    - heroku-deploy:
+        key-name: HEROKU_SSH_KEY
