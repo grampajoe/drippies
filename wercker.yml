@@ -1,7 +1,14 @@
 box: wercker/python
 build:
   steps:
-    - script: echo 'wow'
+    - virtualenv
+        python_location=/usr/bin/python3.4
+    - script:
+        name: run tests
+        code: |
+          pip install -e .
+          pip install pytest
+          py.test
 deploy:
   steps:
     - heroku-deploy:
