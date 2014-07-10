@@ -1,8 +1,8 @@
 box: wercker/python
 build:
   steps:
-    - virtualenv
-        python_location=/usr/bin/python3.4
+    - virtualenv:
+        python_location: /usr/bin/python3.4
     - script:
         name: run tests
         code: |
