@@ -1,5 +1,8 @@
 box: wercker/python
 build:
   steps:
+    - script: echo 'wow'
+deploy:
+  steps:
     - heroku-deploy:
         key-name: HEROKU_SSH_KEY
