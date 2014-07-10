@@ -1,4 +1,4 @@
-box: wercker/python
+box: josh/python@0.0.2
 build:
   steps:
     - virtualenv:
