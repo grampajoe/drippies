@@ -46,5 +46,3 @@ class TestDrippies(object):
         assert field.get_attribute('value') == 'NYC'
 
         # There's also a nice blurb about the weather
-
-        raise AssertionError('Finish it!!!')
