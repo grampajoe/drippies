@@ -1,0 +1,20 @@
+{
+  "name": "drippies",
+  "version": "0.0.0",
+  "description": "drippies ========",
+  "main": "app.js",
+  "dependencies": {
+    "geocoder": "^0.2.0",
+    "jquery": "^2.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/grampajoe/drippies.git"
+  },
+  "author": "Joe Friedl <joe@joefried.net>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/grampajoe/drippies/issues"
+  },
+  "homepage": "https://github.com/grampajoe/drippies"
+}
