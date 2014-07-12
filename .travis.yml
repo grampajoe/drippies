@@ -9,13 +9,14 @@ install:
   - pip install -e .
   - pip install -r test_requirements.txt
   - npm install -g browserify
-  - cd static/js && npm install
+  - (cd static/js && npm install)
 before_script:
   - honcho start 2>&1 > /dev/null &
   - sleep 3
 script:
   - py.test
-  - cd static/js && browserify drippies.js -o app.js
+before_deploy:
+  - (cd static/js && browserify drippies.js -o app.js)
 deploy:
   provider: heroku
   api_key:
