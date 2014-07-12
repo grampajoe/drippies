@@ -20,3 +20,7 @@ class TestDrippies(object):
         response = client.get('/')
 
         assert '<title>Drippies</title>' in str(response.data)
+
+
+class TestLocationSearch(object):
+    pass
