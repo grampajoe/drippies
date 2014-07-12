@@ -8,16 +8,20 @@ before_install:
 install:
   - pip install -e .
   - pip install -r test_requirements.txt
+  - npm install -g browserify
+  - cd static/js && npm install
 before_script:
   - honcho start 2>&1 > /dev/null &
   - sleep 3
 script:
   - py.test
+  - cd static/js && browserify drippies.js -o app.js
 deploy:
   provider: heroku
   api_key:
     secure: Nq9LZfinaQBlENCsmwSdr1W5pv4zkbRn30Hh4ldS/Qb/cujewgNRnc+E+5W4IE03y/3nDpSFX1DxmFCvWfUYPxfmZrrvecPDDXqPwFhsxBZKxjU3yz8QNC/QgX08UgL2ZHiL6vMjqGthg0Uq3AONRmTyLQLNm3sQJT+DW+EasgU=
   app: drippies
+  skip_cleanup: true
   on:
     repo: grampajoe/drippies
     branch: master
