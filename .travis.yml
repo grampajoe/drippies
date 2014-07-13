@@ -10,7 +10,7 @@ install:
   - pip install -r test_requirements.txt
   - npm install -g browserify
   - npm install -g mocha
-  - (cd static/js && npm install)
+  - (cd static/js && npm --python=/usr/bin/python2.7 install)
 before_script:
   - (cd static/js && browserify drippies.js -o app.js)
   - honcho start 2>&1 > /dev/null &
