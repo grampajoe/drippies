@@ -1,5 +1,3 @@
-var jQuery = require('jquery');
-
 var Drippies = function($) {
     this.$ = $;
 };
@@ -14,7 +12,11 @@ Drippies.prototype.geocode = function(address) {
       'url': 'https://maps.googleapis.com/maps/api/geocode/json',
       'data': {'address': address},
       'success': function(data) {
-        deferred.resolve(data.results[0]);
+        var result = data.results[0];
+        deferred.resolve(
+          result.geometry.location.lat,
+          result.geometry.location.lng
+        );
       },
       'error': function(xhr, textStatus, errorThrown) {
         deferred.reject(errorThrown);
@@ -24,8 +26,39 @@ Drippies.prototype.geocode = function(address) {
     return deferred;
 };
 
-// Initializes the app
-Drippies.prototype.init = function() {
+Drippies.prototype.getWeather = function(lat, lng) {
+  var $ = this.$,
+      deferred = new $.Deferred();
+
+  deferred.resolve('wow');
+
+  return deferred;
 };
 
-module.exports = Drippies;
+// Submit handler for the location form
+Drippies.prototype.submit = function() {
+  var self = this,
+      $ = this.$,
+      query = $('#location').val();
+
+  self.geocode(query).then(function(lat, lng) {
+    self.getWeather(lat, lng).then(function() {
+      // :)
+    });
+  });
+};
+
+// Initializes the app
+Drippies.prototype.init = function() {
+  var $ = this.$,
+      self = this;
+
+  $('form').on('submit', function() {
+    self.submit();
+    return false;
+  });
+};
+
+module.exports = function($) {
+  return new Drippies($);
+};
