@@ -24,4 +24,8 @@ Drippies.prototype.geocode = function(address) {
     return deferred;
 };
 
+// Initializes the app
+Drippies.prototype.init = function() {
+};
+
 module.exports = Drippies;
