@@ -1,19 +1,27 @@
-var $ = require('jquery');
+var jQuery = require('jquery');
 
-function showWeather(data) {
-  var place = data.results[0];
+var Drippies = function($) {
+    this.$ = $;
+};
 
-  $('#location').val(place.formatted_address);
-}
- 
-$('form').on('submit', function() {
-  var query = $('#location').val();
+// Returns a promise with a geocode result.
+Drippies.prototype.geocode = function(address) {
+    var $ = this.$,
+        deferred = new $.Deferred();
 
-  $.get(
-    'http://maps.googleapis.com/maps/api/geocode/json',
-    {'address': query},
-    showWeather
-  );
+    $.ajax({
+      'method': 'GET',
+      'url': 'https://maps.googleapis.com/maps/api/geocode/json',
+      'data': {'address': address},
+      'success': function(data) {
+        deferred.resolve(data.results[0]);
+      },
+      'error': function(xhr, textStatus, errorThrown) {
+        deferred.reject(errorThrown);
+      },
+    });
 
-  return false;
-});
+    return deferred;
+};
+
+module.exports = Drippies;

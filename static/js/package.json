@@ -4,8 +4,11 @@
   "description": "drippies ========",
   "main": "app.js",
   "dependencies": {
-    "geocoder": "^0.2.0",
     "jquery": "^2.1.0"
+  },
+  "devDependencies": {
+    "xmlhttprequest": "*",
+    "jsdom": "*"
   },
   "repository": {
     "type": "git",
