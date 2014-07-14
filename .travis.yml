@@ -21,6 +21,7 @@ script:
   - (cd js && npm test)
 after_script:
   - pkill -SIGINT -f gunicorn
+  - sleep 1  # flushhhhhhh
   - cat honcho.log
 deploy:
   provider: heroku
