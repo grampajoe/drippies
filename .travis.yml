@@ -14,11 +14,13 @@ install:
   - (cd js && npm --python=/usr/bin/python2.7 install)
 before_script:
   - (cd js && npm run-script build)
-  - honcho start 2>&1 > /dev/null &
+  - honcho start 2>&1 > honcho.log &
   - sleep 3
 script:
   - py.test
   - (cd js && npm test)
+after_script:
+  - cat honcho.log
 deploy:
   provider: heroku
   api_key:
