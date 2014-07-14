@@ -14,13 +14,11 @@ install:
   - (cd js && npm --python=/usr/bin/python2.7 install)
 before_script:
   - (cd js && npm run-script build)
-  - python drippies.py 2>&1 > app.log &
+  - honcho start 2>&1 > /dev/null &
   - sleep 3
 script:
   - py.test
   - (cd js && npm test)
-after_failure:
-  - cat app.log
 deploy:
   provider: heroku
   api_key:
