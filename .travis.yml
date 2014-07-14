@@ -20,6 +20,7 @@ script:
   - py.test
   - (cd js && npm test)
 after_script:
+  - pkill -SIGINT -f gunicorn
   - cat honcho.log
 deploy:
   provider: heroku
