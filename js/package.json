@@ -11,7 +11,7 @@
     "jsdom": "*"
   },
   "scripts": {
-    "build": "browserify drippies.js | uglifyjs > ../static/app.min.js",
+    "build": "browserify app.js -o ../static/app.js",
     "test": "mocha"
   },
   "repository": {

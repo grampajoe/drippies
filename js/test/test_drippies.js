@@ -2,6 +2,7 @@ var assert = require('assert'),
     jsdom = require('jsdom'),
     XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest,
     jQuery = require('jquery'),
+    express = require('express'),
     Drippies = require('../drippies');
 
 describe('Drippies', function() {
@@ -12,8 +13,9 @@ describe('Drippies', function() {
   beforeEach(function(done) {
     jsdom.env({
       'html': '<html><body><form><input type="text" id="location"></form></body></html>',
-      'url': 'http://localhost:5000',
+      'url': 'http://localhost:9189',
       'done': function(err, window) {
+        global.window = window;
         $ = jQuery(window);
         done();
 
@@ -40,10 +42,28 @@ describe('Drippies', function() {
   });
 
   describe('#getWeather', function() {
-    it('should send a geocode result to the weather endpoint', function(done) {
+    var server;
 
+    beforeEach(function() {
+      var app = express();
+
+      app.get(/\/forecast\/.*/, function(req, res) {
+        res.send('Forecast!');
+      });
+
+      server = app.listen(9189);
+    });
+
+    afterEach(function() {
+      server.close();
+    });
+
+    it('should send a geocode result to the weather endpoint', function(done) {
       drippies.getWeather(40.123, -70.321).then(function(weather) {
+        assert.equal(weather, 'Forecast!');
         done();
+      }).fail(function(err) {
+        done(new Error(err));
       });
     });
   });

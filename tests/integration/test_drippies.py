@@ -1,3 +1,4 @@
+import mock
 import pytest
 
 from drippies import app
@@ -19,8 +20,23 @@ class TestDrippies(object):
         """The index page should have the title "Drippies"."""
         response = client.get('/')
 
-        assert '<title>Drippies</title>' in str(response.data)
+        assert '<title>Drippies</title>' in response.data.decode('utf-8')
 
+    @mock.patch('drippies.get_forecast')
+    def test_forecast(self, get_forecast, client):
+        """The forecast endpoint should return a 200 response."""
+        get_forecast.return_value = 'Cool'
 
-class TestLocationSearch(object):
-    pass
+        response = client.get('/forecast/40.0,-70.1')
+
+        assert response.status_code == 200
+
+    @mock.patch('drippies.get_forecast')
+    def test_forecast_gets_forecast(self, get_forecast, client):
+        """The forecast endpoint should get a forecast from the API."""
+        get_forecast.return_value = 'Wow a forecast!'
+
+        response = client.get('/forecast/40.0,-70.1')
+
+        get_forecast.assert_called_with(40.0, -70.1)
+        assert response.data.decode('utf-8') == get_forecast.return_value

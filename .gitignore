@@ -3,4 +3,4 @@ __pycache__
 *.egg-info
 dist
 node_modules
-static/app.min.js
+static/app*.js

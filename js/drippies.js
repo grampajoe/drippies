@@ -28,9 +28,19 @@ Drippies.prototype.geocode = function(address) {
 
 Drippies.prototype.getWeather = function(lat, lng) {
   var $ = this.$,
-      deferred = new $.Deferred();
+      deferred = new $.Deferred(),
+      url = window.location.protocol + '//' + window.location.host + '/forecast/' + lat + ',' + lng;
 
-  deferred.resolve('wow');
+  $.ajax({
+    'method': 'GET',
+    'url': url,
+    'success': function(data) {
+      deferred.resolve(data);
+    },
+    'error': function(xhr, textStatus, errorThrown) {
+      deferred.reject(errorThrown);
+    }
+  });
 
   return deferred;
 };
@@ -42,8 +52,8 @@ Drippies.prototype.submit = function() {
       query = $('#location').val();
 
   self.geocode(query).then(function(lat, lng) {
-    self.getWeather(lat, lng).then(function() {
-      // :)
+    self.getWeather(lat, lng).then(function(weather) {
+      $('#weather').html(weather);
     });
   });
 };

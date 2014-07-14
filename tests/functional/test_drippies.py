@@ -1,3 +1,5 @@
+import time
+
 import pytest
 from selenium import webdriver
 
@@ -40,9 +42,14 @@ class TestDrippies(object):
         # Submits the form
         field.submit()
 
+        # Waits patiently
+        time.sleep(1)
+
         # The text field is still there, prefilled with the name of his
         # town
         field = driver.find_element_by_id('location')
         assert field.get_attribute('value') == 'NYC'
 
         # There's also a nice blurb about the weather
+        weather = driver.find_element_by_id('weather')
+        assert len(weather.text) > 0
