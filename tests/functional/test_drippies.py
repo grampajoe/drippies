@@ -43,7 +43,7 @@ class TestDrippies(object):
         field.submit()
 
         # Waits patiently
-        time.sleep(5)
+        time.sleep(15)
 
         # The text field is still there, prefilled with the name of his
         # town
