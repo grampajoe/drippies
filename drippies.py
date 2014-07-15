@@ -1,3 +1,4 @@
+import logging
 import os
 
 import forecastio
@@ -6,6 +7,12 @@ from werkzeug.routing import BaseConverter
 
 
 app = Flask(__name__)
+
+@app.before_first_request
+def setup_logging():
+    log_handler = logging.StreamHandler()
+    log_handler.setLevel(logging.INFO)
+    app.logger.addHandler(log_handler)
 
 
 class LocationConverter(BaseConverter):
