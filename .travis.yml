@@ -22,6 +22,7 @@ script:
   - py.test
   - (cd js && npm test)
 after_script:
+  - sleep 10  # wait for NewRelic?
   - pkill -SIGINT -f gunicorn
   - sleep 1  # flushhhhhhh
   - cat honcho.log
