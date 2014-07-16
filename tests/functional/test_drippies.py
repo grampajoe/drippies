@@ -1,3 +1,4 @@
+import os
 import time
 
 import pytest
@@ -9,12 +10,21 @@ BASE_URL = 'http://localhost:5000'
 
 @pytest.fixture(scope='function')
 def driver(request):
-    driver = webdriver.Firefox()
+    profile = webdriver.FirefoxProfile()
+    profile.add_extension(
+        os.path.join(os.path.dirname(__file__), 'selenium/JSErrorCollector.xpi'),
+    )
 
+    driver = webdriver.Firefox(firefox_profile=profile)
     driver.implicitly_wait(5)
 
     def close_driver():
+        # Let's check for errors
+        errors = driver.execute_script('return window.JSErrorCollector_errors.pump()')
         driver.close()
+
+        if errors:
+            raise Exception(errors)
 
     request.addfinalizer(close_driver)
 

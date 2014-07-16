@@ -11,6 +11,7 @@ Drippies.prototype.geocode = function(address) {
       'method': 'GET',
       'url': 'https://maps.googleapis.com/maps/api/geocode/json',
       'data': {'address': address},
+      'dataType': 'json',
       'success': function(data) {
         var result = data.results[0];
         deferred.resolve(
