@@ -1,9 +1,18 @@
 import logging
+import re
 import os
 
 import forecastio
 from flask import Flask, render_template
 from werkzeug.routing import BaseConverter
+
+
+TRANSLATIONS = {
+    'rain': 'drippies',
+    'cloudy': 'fluff fluffs',
+    'drizzle': 'pitter pats',
+    'temperatures': 'hot\'n\'colds',
+}
 
 
 app = Flask(__name__)
@@ -13,6 +22,26 @@ def setup_logging():
     log_handler = logging.StreamHandler()
     log_handler.setLevel(logging.INFO)
     app.logger.addHandler(log_handler)
+
+
+def _translate(token):
+    """Returns a translated (or not) version of a token."""
+    small_token = token.lower()
+    if small_token in TRANSLATIONS:
+        replacement = TRANSLATIONS[small_token]
+        if token[0].isupper():
+            replacement = replacement.capitalize()
+        token = replacement
+    return token
+
+
+def drippify(forecast):
+    """Returns a silly version of a forecast."""
+    tokens = re.split('(\W+)', forecast)
+
+    result = [_translate(token) for token in tokens]
+
+    return ''.join(result)
 
 
 class LocationConverter(BaseConverter):
@@ -51,7 +80,8 @@ def index():
 
 @app.route('/forecast/<loc:lat>,<loc:lng>')
 def forecast(lat, lng):
-    return get_forecast(lat, lng)
+    boring = get_forecast(lat, lng)
+    return drippify(boring)
 
 
 if __name__ == '__main__':

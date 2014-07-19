@@ -40,3 +40,12 @@ class TestDrippies(object):
 
         get_forecast.assert_called_with(40.0, -70.1)
         assert response.data.decode('utf-8') == get_forecast.return_value
+
+    @mock.patch('drippies.get_forecast')
+    def test_silliness(self, get_forecast, client):
+        """Forecasts should be silly."""
+        get_forecast.return_value = 'Rain tomorrow. Cloudy forever!!!'
+
+        response = client.get('/forecast/10.0,-1.99')
+
+        assert response.data.decode('utf-8') == 'Drippies tomorrow. Fluff fluffs forever!!!'
