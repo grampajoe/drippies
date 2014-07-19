@@ -1,7 +1,7 @@
 import mock
 import os
 
-from drippies import get_forecast
+from drippies import get_forecast, drippify
 
 
 class TestForecast(object):
@@ -32,3 +32,18 @@ class TestForecast(object):
             assert 'FORECASTIO_API_KEY' in str(ex)
         else:
             raise AssertionError('No exception raised.')
+
+
+class TestDrippify(object):
+    def test_replacements(self):
+        """Should replace words with silly ones."""
+        assert drippify('rain') == 'drippies'
+        assert drippify('cloudy') == 'fluff fluffs'
+        assert drippify('drizzle') == 'pitter pats'
+        assert drippify('temperatures') == 'hot\'n\'colds'
+
+    def test_makes_good_sentences(self):
+        """Should preserve capitalization and punctuation."""
+        assert drippify('Rain!!!!!!!!') == 'Drippies!!!!!!!!'
+        assert drippify('Rain all day, cloudy all night.') == \
+            'Drippies all day, fluff fluffs all night.'
