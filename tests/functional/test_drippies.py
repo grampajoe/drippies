@@ -66,3 +66,30 @@ class TestDrippies(object):
         assert field.get_attribute('value') == 'NYC'
 
         self.assert_shows_the_weather(driver)
+
+    def test_shows_location_choices(self, driver):
+        """Submitting an ambiguous location should show choices."""
+        # Francis loads up the site
+        driver.get(BASE_URL)
+
+        # They want to see weather for "Chester"
+        self.submit_location(driver, 'Chester')
+
+        # But the app is all like "WHICH CHESTER???"
+        locations = driver.find_elements_by_css_selector('#locations a')
+
+        # It shows him a bunch of choices
+        assert len(locations) > 1
+
+        # Francis sees that all the choices are, indeed, Chesters
+        for location in locations:
+            assert 'Chester' in location.text
+
+        # He clicks on the last one
+        locations[-1].click()
+
+        # And waits a little bit
+        time.sleep(3)
+
+        # And sees his forecast!
+        self.assert_shows_the_weather(driver)

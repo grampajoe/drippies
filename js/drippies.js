@@ -13,11 +13,7 @@ Drippies.prototype.geocode = function(address) {
       'data': {'address': address},
       'dataType': 'json',
       'success': function(data) {
-        var result = data.results[0];
-        deferred.resolve(
-          result.geometry.location.lat,
-          result.geometry.location.lng
-        );
+        deferred.resolve(data.results);
       },
       'error': function(xhr, textStatus, errorThrown) {
         deferred.reject(errorThrown);
@@ -25,6 +21,37 @@ Drippies.prototype.geocode = function(address) {
     });
 
     return deferred;
+};
+
+// Shows location choices
+Drippies.prototype.showChoices = function(results) {
+  var $ = this.$,
+      self = this,
+      $locations = $('#locations');
+
+  function showWeather(weather) {
+    self.showWeather(weather);
+  }
+
+  if (results.length === 1) {
+    self.getWeather(
+      results[0].geometry.location.lat,
+      results[0].geometry.location.lng
+    ).then(showWeather);
+  }
+
+  $.each(results, function(i, result) {
+    var $loc = $('<a href="#">' + result.formatted_address + '</a>'),
+        $el = $('<li></li>').append($loc),
+        lat = result.geometry.location.lat,
+        lng = result.geometry.location.lng;
+
+    $loc.click(function() {
+      self.getWeather(lat, lng).then(showWeather);
+    });
+
+    $locations.append($el);
+  });
 };
 
 Drippies.prototype.getWeather = function(lat, lng) {
@@ -46,17 +73,21 @@ Drippies.prototype.getWeather = function(lat, lng) {
   return deferred;
 };
 
+Drippies.prototype.showWeather = function(weather) {
+  this.$('#weather').html(weather);
+};
+
 // Submit handler for the location form
 Drippies.prototype.submit = function() {
   var self = this,
       $ = this.$,
       query = $('#location').val();
 
-  self.geocode(query).then(function(lat, lng) {
-    self.getWeather(lat, lng).then(function(weather) {
-      $('#weather').html(weather);
-    });
-  });
+  function showChoices(results) {
+    self.showChoices(results);
+  }
+
+  self.geocode(query).then(showChoices);
 };
 
 // Initializes the app
