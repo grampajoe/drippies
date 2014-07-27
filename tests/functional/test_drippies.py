@@ -32,34 +32,37 @@ def driver(request):
 
 
 class TestDrippies(object):
+    def submit_location(self, driver, location):
+        """Submits a location to the location form."""
+        field = driver.find_element_by_id('location')
+
+        field.send_keys(location)
+        field.submit()
+
+        time.sleep(3)
+
+    def assert_shows_the_weather(self, driver):
+        # There's also a nice blurb about the weather
+        weather = driver.find_element_by_id('weather')
+        assert len(weather.text) > 0
+
     def test_index(self, driver):
         """The index page should return a response."""
-        driver.get(BASE_URL + '/')
+        driver.get(BASE_URL)
 
         assert 'Drippies' in driver.title
 
     def test_shows_weather_for_location(self, driver):
         """Entering a location and submitting should show the weather."""
         # Greg visits the index page
-        driver.get(BASE_URL + '/')
+        driver.get(BASE_URL)
 
-        # And sees a big ol' text input
-        field = driver.find_element_by_id('location')
-
-        # He types in the name of his town
-        field.send_keys('NYC')
-
-        # Submits the form
-        field.submit()
-
-        # Waits patiently
-        time.sleep(3)
+        # He submits the name of his town
+        self.submit_location(driver, 'NYC')
 
         # The text field is still there, prefilled with the name of his
         # town
         field = driver.find_element_by_id('location')
         assert field.get_attribute('value') == 'NYC'
 
-        # There's also a nice blurb about the weather
-        weather = driver.find_element_by_id('weather')
-        assert len(weather.text) > 0
+        self.assert_shows_the_weather(driver)
