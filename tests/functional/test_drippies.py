@@ -60,11 +60,16 @@ class TestDrippies(object):
         # He submits the name of his town
         self.submit_location(driver, 'NYC')
 
+        # And there are no choices to choose
+        locations = driver.find_elements_by_css_selector('#locations li')
+        assert len(locations) == 0
+
         # The text field is still there, prefilled with the name of his
         # town
         field = driver.find_element_by_id('location')
-        assert field.get_attribute('value') == 'NYC'
+        assert field.get_attribute('value') == 'New York, NY, USA'
 
+        # And he sees the weather!
         self.assert_shows_the_weather(driver)
 
     def test_shows_location_choices(self, driver):
@@ -86,7 +91,16 @@ class TestDrippies(object):
             assert 'Chester' in location.text
 
         # He clicks on the last one
+        location_name = locations[-1].text
         locations[-1].click()
+
+        # Then he sees the locations disappear!
+        locations = driver.find_elements_by_css_selector('#locations a')
+        assert len(locations) == 0
+
+        # And sees the location he chose in the box
+        field = driver.find_element_by_id('location')
+        assert field.get_attribute('value') == location_name
 
         # And waits a little bit
         time.sleep(3)

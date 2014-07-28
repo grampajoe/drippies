@@ -29,29 +29,36 @@ Drippies.prototype.showChoices = function(results) {
       self = this,
       $locations = $('#locations');
 
-  function showWeather(weather) {
-    self.showWeather(weather);
-  }
-
   if (results.length === 1) {
-    self.getWeather(
-      results[0].geometry.location.lat,
-      results[0].geometry.location.lng
-    ).then(showWeather);
+    return self.chooseResult(results[0]);
   }
 
   $.each(results, function(i, result) {
-    var $loc = $('<a href="#">' + result.formatted_address + '</a>'),
-        $el = $('<li></li>').append($loc),
-        lat = result.geometry.location.lat,
-        lng = result.geometry.location.lng;
+    var address = result.formatted_address,
+        $loc = $('<a href="#">' + address + '</a>'),
+        $el = $('<li></li>').append($loc);
 
     $loc.click(function() {
-      self.getWeather(lat, lng).then(showWeather);
+      self.chooseResult(result);
     });
 
     $locations.append($el);
   });
+};
+
+Drippies.prototype.chooseResult = function(result) {
+  var $ = this.$,
+      self = this,
+      lat = result.geometry.location.lat,
+      lng = result.geometry.location.lng;
+
+  function showWeather(weather) {
+    self.showWeather(weather);
+  }
+
+  $('#locations').html('');
+  $('#location').val(result.formatted_address);
+  self.getWeather(lat, lng).then(showWeather);
 };
 
 Drippies.prototype.getWeather = function(lat, lng) {

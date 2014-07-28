@@ -8,7 +8,8 @@ var should = require('should'),
 describe('Drippies', function() {
   var drippies,
       window,
-      $;
+      $,
+      fakeDeferrer;
 
   beforeEach(function(done) {
     jsdom.env({
@@ -127,6 +128,14 @@ describe('Drippies', function() {
       $('#locations a').last().click();
     });
 
+    it('should hide location results when one is clicked', function() {
+      drippies.showChoices(fakeResults);
+
+      $('#locations a').last().click();
+
+      $('#locations a').length.should.eql(0);
+    });
+
     it('should get the weather right away if only one result', function(done) {
       drippies.getWeather = function(lat, lng) {
         var deferred = new $.Deferred();
@@ -158,6 +167,30 @@ describe('Drippies', function() {
       };
 
       drippies.showChoices(fakeResults.slice(0, 1));
+    });
+
+    it('should fill the location input with the chosen thingy', function() {
+      drippies.showChoices(fakeResults);
+
+      var locationText = $('#locations a').last().text();
+
+      $('#locations a').last().click();
+
+      $('#location').val().should.eql(locationText);
+    });
+
+    it('should fill the input with the sole result', function() {
+      var locationText = fakeResults[0].formatted_address;
+
+      drippies.showChoices(fakeResults.slice(0, 1));
+
+      $('#location').val().should.eql(locationText);
+    });
+
+    it('should not show choices for one result', function() {
+      drippies.showChoices(fakeResults.slice(0, 1));
+
+      $('#locations li').length.should.eql(0);
     });
   });
 
