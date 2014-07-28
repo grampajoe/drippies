@@ -1,4 +1,4 @@
-var assert = require('assert'),
+var should = require('should'),
     jsdom = require('jsdom'),
     XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest,
     jQuery = require('jquery'),
@@ -8,11 +8,17 @@ var assert = require('assert'),
 describe('Drippies', function() {
   var drippies,
       window,
-      $;
+      $,
+      fakeDeferrer;
 
   beforeEach(function(done) {
     jsdom.env({
-      'html': '<html><body><form><input type="text" id="location"></form></body></html>',
+      'html':
+        '<html><body>' +
+        '<form><input type="text" id="location"></form>' +
+        '<ul id="locations"></ul>' +
+        '<p id="weather"></p>' +
+        '</body></html>',
       'url': 'http://localhost:9189',
       'done': function(err, window) {
         global.window = window;
@@ -31,13 +37,160 @@ describe('Drippies', function() {
 
   describe('#geocode', function() {
     it('should call the Google geocode api', function(done) {
-      drippies.geocode('NYC').then(function(lat, lng) {
-        assert(lat > 40);
-        assert(lng < 70);
+      drippies.geocode('NYC').then(function(results) {
+        results.should.be.an.Array;
         done();
       }).fail(function(err) {
         done(new Error(err));
       });
+    });
+  });
+
+  describe('#showChoices', function() {
+    var fakeResults = [
+      {
+        'formatted_address': '123 Test St.',
+        'geometry': {
+          'location': {
+            'lat': 12,
+            'lng': -80,
+          },
+        },
+      },
+      {
+        'formatted_address': '321 Butt St.',
+        'geometry': {
+          'location': {
+            'lat': 8,
+            'lng': -10,
+          },
+        },
+      },
+    ];
+
+    it('should display results', function() {
+      drippies.showChoices(fakeResults);
+
+      var locations = $('#locations li');
+
+      locations.should.have.length(2);
+    });
+
+    it('should make results links', function() {
+      drippies.showChoices(fakeResults);
+
+      var links = $('#locations li a');
+
+      links.should.have.length(2);
+    });
+
+    it('should show the formatted address in the links', function() {
+      drippies.showChoices(fakeResults);
+
+      var links = $('#locations li a');
+
+      links.slice(0, 1).text().should.eql(fakeResults[0].formatted_address);
+      links.slice(1, 2).text().should.eql(fakeResults[1].formatted_address);
+    });
+
+    it('should get the weather when one is clicked', function(done) {
+      drippies.getWeather = function(lat, lng) {
+        var deferred = new $.Deferred();
+
+        lat.should.eql(fakeResults[1].geometry.location.lat);
+        lng.should.eql(fakeResults[1].geometry.location.lng);
+
+        done();
+
+        return deferred;
+      };
+
+      drippies.showChoices(fakeResults);
+      $('#locations a').last().click();
+    });
+
+    it('should show the weather after it gets got', function(done) {
+      drippies.showWeather = function(weather) {
+        weather.should.eql('wow');
+
+        done();
+      };
+
+      drippies.getWeather = function() {
+        var deferred = new $.Deferred();
+
+        deferred.resolve('wow');
+
+        return deferred;
+      };
+
+      drippies.showChoices(fakeResults);
+      $('#locations a').last().click();
+    });
+
+    it('should hide location results when one is clicked', function() {
+      drippies.showChoices(fakeResults);
+
+      $('#locations a').last().click();
+
+      $('#locations a').length.should.eql(0);
+    });
+
+    it('should get the weather right away if only one result', function(done) {
+      drippies.getWeather = function(lat, lng) {
+        var deferred = new $.Deferred();
+
+        lat.should.eql(fakeResults[0].geometry.location.lat);
+        lng.should.eql(fakeResults[0].geometry.location.lng);
+
+        done();
+
+        return deferred;
+      };
+
+      drippies.showChoices(fakeResults.slice(0, 1));
+    });
+
+    it('should show the weather right away if only one result', function(done) {
+      drippies.showWeather = function(weather) {
+        weather.should.eql('wow');
+
+        done();
+      };
+
+      drippies.getWeather = function() {
+        var deferred = new $.Deferred();
+
+        deferred.resolve('wow');
+
+        return deferred;
+      };
+
+      drippies.showChoices(fakeResults.slice(0, 1));
+    });
+
+    it('should fill the location input with the chosen thingy', function() {
+      drippies.showChoices(fakeResults);
+
+      var locationText = $('#locations a').last().text();
+
+      $('#locations a').last().click();
+
+      $('#location').val().should.eql(locationText);
+    });
+
+    it('should fill the input with the sole result', function() {
+      var locationText = fakeResults[0].formatted_address;
+
+      drippies.showChoices(fakeResults.slice(0, 1));
+
+      $('#location').val().should.eql(locationText);
+    });
+
+    it('should not show choices for one result', function() {
+      drippies.showChoices(fakeResults.slice(0, 1));
+
+      $('#locations li').length.should.eql(0);
     });
   });
 
@@ -60,11 +213,21 @@ describe('Drippies', function() {
 
     it('should send a geocode result to the weather endpoint', function(done) {
       drippies.getWeather(40.123, -70.321).then(function(weather) {
-        assert.equal(weather, 'Forecast!');
+        weather.should.eql('Forecast!');
         done();
       }).fail(function(err) {
         done(new Error(err));
       });
+    });
+  });
+
+  describe('#showWeather', function() {
+    it('should show the weather on the page', function() {
+      var $weather = $('#weather');
+
+      drippies.showWeather('fart butt');
+
+      $weather.text().should.eql('fart butt');
     });
   });
 

@@ -7,9 +7,10 @@
     "jquery": "^2.1.0"
   },
   "devDependencies": {
-    "xmlhttprequest": "*",
+    "express": "*",
     "jsdom": "*",
-    "express": "*"
+    "should": "^4.0.4",
+    "xmlhttprequest": "*"
   },
   "scripts": {
     "build": "browserify app.js -o ../static/app.js",

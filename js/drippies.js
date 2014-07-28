@@ -13,11 +13,7 @@ Drippies.prototype.geocode = function(address) {
       'data': {'address': address},
       'dataType': 'json',
       'success': function(data) {
-        var result = data.results[0];
-        deferred.resolve(
-          result.geometry.location.lat,
-          result.geometry.location.lng
-        );
+        deferred.resolve(data.results);
       },
       'error': function(xhr, textStatus, errorThrown) {
         deferred.reject(errorThrown);
@@ -25,6 +21,44 @@ Drippies.prototype.geocode = function(address) {
     });
 
     return deferred;
+};
+
+// Shows location choices
+Drippies.prototype.showChoices = function(results) {
+  var $ = this.$,
+      self = this,
+      $locations = $('#locations');
+
+  if (results.length === 1) {
+    return self.chooseResult(results[0]);
+  }
+
+  $.each(results, function(i, result) {
+    var address = result.formatted_address,
+        $loc = $('<a href="#">' + address + '</a>'),
+        $el = $('<li></li>').append($loc);
+
+    $loc.click(function() {
+      self.chooseResult(result);
+    });
+
+    $locations.append($el);
+  });
+};
+
+Drippies.prototype.chooseResult = function(result) {
+  var $ = this.$,
+      self = this,
+      lat = result.geometry.location.lat,
+      lng = result.geometry.location.lng;
+
+  function showWeather(weather) {
+    self.showWeather(weather);
+  }
+
+  $('#locations').html('');
+  $('#location').val(result.formatted_address);
+  self.getWeather(lat, lng).then(showWeather);
 };
 
 Drippies.prototype.getWeather = function(lat, lng) {
@@ -46,17 +80,21 @@ Drippies.prototype.getWeather = function(lat, lng) {
   return deferred;
 };
 
+Drippies.prototype.showWeather = function(weather) {
+  this.$('#weather').html(weather);
+};
+
 // Submit handler for the location form
 Drippies.prototype.submit = function() {
   var self = this,
       $ = this.$,
       query = $('#location').val();
 
-  self.geocode(query).then(function(lat, lng) {
-    self.getWeather(lat, lng).then(function(weather) {
-      $('#weather').html(weather);
-    });
-  });
+  function showChoices(results) {
+    self.showChoices(results);
+  }
+
+  self.geocode(query).then(showChoices);
 };
 
 // Initializes the app
