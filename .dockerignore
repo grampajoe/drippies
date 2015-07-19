@@ -1,2 +1,7 @@
-*.py[co]
 __pycache__
+*.py[co]
+*.egg-info
+dist
+build
+node_modules
+static/app*.js
