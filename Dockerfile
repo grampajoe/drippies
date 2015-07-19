@@ -7,6 +7,7 @@ COPY . /app
 WORKDIR /app
 
 ENV PORT=5000
+ENV FORECASTIO_API_KEY='your-key-here'
 
 EXPOSE 5000
 
