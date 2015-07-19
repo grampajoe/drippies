@@ -8,4 +8,6 @@ WORKDIR /app
 
 ENV PORT=5000
 
+EXPOSE 5000
+
 CMD gunicorn drippies:app -b 0.0.0.0:$PORT --access-logfile=- --error-logfile=- --log-file=- -w 2 -k eventlet
