@@ -1,0 +1,16 @@
+version: 2
+jobs:
+  unit-test:
+    docker:
+      - image: python:3.6
+    steps:
+      - checkout
+      - run: |
+          pip install -r requirements.txt -r test_requirements.txt
+      - run: py.test tests/{unit,integration}
+
+workflows:
+  version: 2
+  main:
+    jobs:
+      - unit-test
