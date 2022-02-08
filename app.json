@@ -8,8 +8,5 @@
     {
       "url": "heroku/python"
     }
-  ],
-  "scripts": {
-    "postdeploy": "npm run build"
-  }
+  ]
 }
