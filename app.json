@@ -1,0 +1,12 @@
+{
+  "name": "drippies",
+  "description": "A weather app for idiot children.",
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    },
+    {
+      "url": "heroku/python"
+    }
+  ]
+}

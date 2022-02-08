@@ -7,15 +7,16 @@
     "jquery": "^3.5.0"
   },
   "devDependencies": {
+    "browserify": "^17.0.0",
     "express": "*",
     "jsdom": "*",
+    "mocha": "^9.2.0",
     "should": "^4.0.4",
-    "xmlhttprequest": "*",
-    "mocha": "^9.2.0"
+    "xmlhttprequest": "*"
   },
   "scripts": {
-    "build": "browserify app.js -o ../static/app.js",
-    "test": "mocha"
+    "build": "browserify js/app.js -o static/app.js",
+    "test": "mocha js/test"
   },
   "repository": {
     "type": "git",
