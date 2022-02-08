@@ -14,8 +14,8 @@
     "mocha": "^9.2.0"
   },
   "scripts": {
-    "build": "browserify app.js -o ../static/app.js",
-    "test": "mocha"
+    "build": "browserify js/app.js -o static/app.js",
+    "test": "mocha js/test"
   },
   "repository": {
     "type": "git",
