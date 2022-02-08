@@ -1,38 +1,39 @@
-var should = require('should'),
+const should = require('should'),
     jsdom = require('jsdom'),
     XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest,
     jQuery = require('jquery'),
     express = require('express'),
     Drippies = require('../drippies');
 
+const { JSDOM } = jsdom;
+
+
 describe('Drippies', function() {
   var drippies,
-      window,
       $,
       fakeDeferrer;
 
   beforeEach(function(done) {
-    jsdom.env({
-      'html':
+    const { window } = new JSDOM(
         '<html><body>' +
         '<form><input type="text" id="location"></form>' +
         '<ul id="locations"></ul>' +
         '<p id="weather"></p>' +
-        '</body></html>',
+        '</body></html>'
+      , {
       'url': 'http://localhost:9189',
-      'done': function(err, window) {
-        global.window = window;
-        $ = jQuery(window);
-        done();
-
-        $.support.cors = true
-        $.ajaxSettings.xhr = function() {
-          return new XMLHttpRequest();
-        };
-
-        drippies = Drippies($);
-      }
     });
+
+    global.window = window;
+    $ = jQuery(window);
+    done();
+
+    $.support.cors = true
+    $.ajaxSettings.xhr = function() {
+      return new XMLHttpRequest();
+    };
+
+    drippies = Drippies($);
   });
 
   describe('#geocode', function() {

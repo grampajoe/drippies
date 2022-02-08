@@ -10,7 +10,8 @@
     "express": "*",
     "jsdom": "*",
     "should": "^4.0.4",
-    "xmlhttprequest": "*"
+    "xmlhttprequest": "*",
+    "mocha": "^9.2.0"
   },
   "scripts": {
     "build": "browserify app.js -o ../static/app.js",
