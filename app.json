@@ -1,4 +1,15 @@
 {
   "name": "drippies",
-  "description": "A weather app for idiot children."
+  "description": "A weather app for idiot children.",
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    },
+    {
+      "url": "heroku/python"
+    }
+  ],
+  "scripts": {
+    "postdeploy": "cd js && npm install -g browserify && npm build"
+  }
 }
