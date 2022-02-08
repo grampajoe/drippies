@@ -4,7 +4,7 @@
   "description": "drippies ========",
   "main": "app.js",
   "dependencies": {
-    "jquery": "^2.1.0"
+    "jquery": "^3.5.0"
   },
   "devDependencies": {
     "express": "*",
