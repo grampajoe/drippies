@@ -10,6 +10,6 @@
     }
   ],
   "scripts": {
-    "postdeploy": "cd js && npm install -g browserify && npm run build"
+    "postdeploy": "npm run build"
   }
 }
